@@ -1,0 +1,9 @@
+{
+  "main": "index.js",
+  "bin": {
+    "lesshint": "cli.js"
+  },
+  "dependencies": {
+    "less": "^2.5.1"
+  }
+}
