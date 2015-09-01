@@ -3,6 +3,7 @@ var less = require("less");
 
 var abcLint = require("../lib/abc-lint");
 
+// Run the ABC linter on a given snippet of Less code
 function lintCode(code) {
     var errors = [];
 
