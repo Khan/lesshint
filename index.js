@@ -4,7 +4,7 @@
 var less = require("less");
 
 var abcLint = require("./lib/abc-lint");
-var nestingLint = require("./lib/nesting-list");
+var nestingLint = require("./lib/nesting-lint");
 
 module.exports = function(code) {
     less.parse(code, function(err, ast) {
