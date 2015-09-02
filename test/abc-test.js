@@ -1,5 +1,5 @@
 /**
- * Tests the ABC linter
+ * Tests the ABC linter.
  */
 var assert = require("assert");
 var less = require("less");

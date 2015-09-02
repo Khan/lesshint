@@ -1,3 +1,6 @@
+/**
+ * Tests the nesting linter.
+ */
 var assert = require("assert");
 var less = require("less");
 
