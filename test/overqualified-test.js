@@ -88,7 +88,10 @@ describe("Overqualified linter", function() {
         });
 
         assert(lineNos[0] === 2);
+        assert(errors[0].indexOf("div#main") > -1);
+
         assert(lineNos[1] === 7);
+        assert(errors[1].indexOf("div#id") > -1);
     });
 
     it("should fail for element.class", function() {
@@ -116,7 +119,10 @@ describe("Overqualified linter", function() {
         });
 
         assert(lineNos[0] === 2);
+        assert(errors[0].indexOf("div.centered") > -1);
+
         assert(lineNos[1] === 7);
+        assert(errors[1].indexOf("div.class") > -1);
     });
 
     it("should pass for nested selectors", function() {
