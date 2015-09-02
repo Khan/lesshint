@@ -6,12 +6,12 @@ var less = require("less");
 var postcss = require("postcss");
 var sourceMap = require("source-map");
 
-var abcLinter = require("./lib/abc-lint");
-var overqualifiedLinter = require("./lib/overqualified-lint");
-var nestingLinter = require("./lib/nesting-lint");
+var abcLint = require("./lib/abc-lint");
+var overqualifiedLint = require("./lib/overqualified-lint");
+var nestingLint = require("./lib/nesting-lint");
 
-const CSS_LINTERS = [overqualifiedLinter];
-const LESS_LINTERS = [abcLinter, nestingLinter];
+const CSS_LINTERS = [overqualifiedLint];
+const LESS_LINTERS = [abcLint, nestingLint];
 
 module.exports = function(code) {
     var errors = [];

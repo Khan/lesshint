@@ -28,22 +28,109 @@ function lintCode(code) {
     return errors;
 }
 
-describe("Nesting linter", function() {
-    it("should fail multiple times when exceeding the limit", function() {
-        var lessCode = [
-            "div {",
-            "   &#id {",
-            "       color: red;",
-            "   }",
-            "",
-            "   &.class {",
-            "       color: green;",
-            "   }",
-            "}",
-        ].join("\n");
+describe("Overqualified linter", function() {
+    it("should pass for elements without ids and classes", function() {
+        var lessCode = `
+            ul {
+                color: red;
+
+                li {
+                    padding: 0;
+                }
+            }
+        `;
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 0);
+    });
+
+    it("should pass for ids and classes without elements", function() {
+        var lessCode = `
+            #id {
+                color: red;
+            }
+
+            .class1.class2 {
+                color: green;
+            }
+
+            #main.class {
+                color: gray;
+            }
+        `;
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 0);
+    });
+
+    it("should fail for element#id", function() {
+        var lessCode = `
+            div#main {
+                color: black;
+            }
+
+            div {
+                &#id {
+                    color: red;
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
-        console.log(errors)
+
+        // Grab the line numbers from the error messages
+        var lineNos = errors.map(function(error) {
+            var pos = error.split(" ").slice(-1)[0];
+            var line = pos.split(":")[0];
+
+            return parseInt(line);
+        });
+
+        assert(lineNos[0] === 2);
+        assert(lineNos[1] === 7);
+    });
+
+    it("should fail for element.class", function() {
+        var lessCode = `
+            div.centered {
+                margin: 0 auto;
+            }
+
+            div {
+                &.class {
+                    color: green;
+                }
+            }
+        `;
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 2);
+
+        // Grab the line numbers from the error messages
+        var lineNos = errors.map(function(error) {
+            var pos = error.split(" ").slice(-1)[0];
+            var line = pos.split(":")[0];
+
+            return parseInt(line);
+        });
+
+        assert(lineNos[0] === 2);
+        assert(lineNos[1] === 7);
+    });
+
+    it("should pass for nested selectors", function() {
+        // NOTE: "div #id" is still unnecessary, but not for the purposes of
+        // this linter
+        var lessCode = `
+            div {
+                #id {
+                    color: red;
+                }
+            }
+        `;
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 0);
     });
 });
