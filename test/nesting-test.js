@@ -21,108 +21,108 @@ function lintCode(code) {
 
 describe("Nesting linter", function() {
     it("should pass for single rules", function() {
-        var lessCode = [
-            "a {",
-            "   background-color: black;",
-            "   color: white;",
-            "   margin: 0;",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                background-color: black;
+                color: white;
+                margin: 0;
+            }
+        `
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
     });
 
     it("should pass for single-nested rules", function() {
-        var lessCode = [
-            "a {",
-            "   background-color: black;",
-            "   color: white;",
-            "   margin: 0;",
-            "",
-            "   &:hover {",
-            "       color: red;",
-            "   }",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                background-color: black;
+                color: white;
+                margin: 0;
+
+                &:hover {
+                    color: red;
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
     });
 
     it("should pass for twice-nested rules", function() {
-        var lessCode = [
-            "a {",
-            "   background-color: black;",
-            "   color: white;",
-            "   margin: 0;",
-            "",
-            "   &:hover {",
-            "       color: red;",
-            "",
-            "       &.disabled {",
-            "           color: gray;",
-            "       }",
-            "   }",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                background-color: black;
+                color: white;
+                margin: 0;
+
+                &:hover {
+                    color: red;
+
+                    &.disabled {
+                        color: gray;
+                    }
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
     });
 
     it("should pass for three-times-nested rules", function() {
-        var lessCode = [
-            "a {",
-            "   background-color: black;",
-            "   color: white;",
-            "   margin: 0;",
-            "",
-            "   &:hover {",
-            "       color: red;",
-            "",
-            "       &.disabled {",
-            "           color: gray;",
-            "",
-            "           &.main {",
-            "               font-weight: bold;",
-            "           }",
-            "       }",
-            "   }",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                background-color: black;
+                color: white;
+                margin: 0;
+
+                &:hover {
+                    color: red;
+
+                    &.disabled {
+                        color: gray;
+
+                        &.main {
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
     });
 
     it("should fail for four-times-nested rules", function() {
-        var lessCode = [
-            "a {",
-            "   background-color: black;",
-            "   color: white;",
-            "   margin: 0;",
-            "",
-            "   &:hover {",
-            "       color: red;",
-            "",
-            "       &.disabled {",
-            "           color: gray;",
-            "",
-            "           &.main {",
-            "               font-weight: bold;",
-            "",
-            "               i,",
-            "               em {",
-            "                   font-weight: 200;",
-            "               }",
-            "",
-            "               span {}",
-            "           }",
-            "       }",
-            "   }",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                background-color: black;
+                color: white;
+                margin: 0;
+
+                &:hover {
+                    color: red;
+
+                    &.disabled {
+                       color: gray;
+
+                        &.main {
+                            font-weight: bold;
+
+                            i,
+                            em {
+                                font-weight: 200;
+                            }
+
+                            span {}
+                        }
+                    }
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
@@ -132,28 +132,28 @@ describe("Nesting linter", function() {
             return parseInt(error.split(" ").slice(-1)[0]);
         });
 
-        assert(lineNos[0] === 15);
-        assert(lineNos[1] === 20);
+        assert(lineNos[0] === 16);
+        assert(lineNos[1] === 21);
     });
 
     it("should fail multiple times when exceeding the limit", function() {
-        var lessCode = [
-            "a {",
-            "   & + a {",
-            "       & + a {",
-            "           & + a {",
-            "               & + a {",   // Too far, begin failing here
-            "                   & + a {",
-            "                       & + a {",
-            "                           color: red;",
-            "                       }",
-            "                   }",
-            "               }",
-            "           }",
-            "       }",
-            "   }",
-            "}",
-        ].join("\n");
+        var lessCode = `
+            a {
+                & + a {
+                    & + a {
+                        & + a {
+                            & + a {   // Too far begin failing here
+                                & + a {
+                                    & + a {
+                                       color: red;
+                                    }
+                                }
+                           }
+                        }
+                    }
+                }
+            }
+        `;
 
         var errors = lintCode(lessCode);
         assert(errors.length === 3);
@@ -163,8 +163,8 @@ describe("Nesting linter", function() {
             return parseInt(error.split(" ").slice(-1)[0]);
         });
 
-        assert(lineNos[0] === 5);
-        assert(lineNos[1] === 6);
-        assert(lineNos[2] === 7);
+        assert(lineNos[0] === 6);
+        assert(lineNos[1] === 7);
+        assert(lineNos[2] === 8);
     });
 });

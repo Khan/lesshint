@@ -7,9 +7,10 @@
     "less": "^2.5.1"
   },
   "devDependencies": {
+    "babel": "^5.8.23",
     "mocha": "^2.3.0"
   },
   "scripts": {
-    "test": "mocha test/*.js"
+    "test": "mocha --require test/babel-hook test/*.js"
   }
 }
