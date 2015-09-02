@@ -128,12 +128,43 @@ describe("Nesting linter", function() {
         assert(errors.length === 2);
 
         // Grab the line numbers from the error messages
-        var lineNo;
+        var lineNos = errors.map(function(error) {
+            return parseInt(error.split(" ").slice(-1)[0]);
+        });
 
-        lineNo = errors[0].split(" ").slice(-1)[0];
-        assert(Number(lineNo) === 15);
+        assert(lineNos[0] === 15);
+        assert(lineNos[1] === 20);
+    });
 
-        var lineNo = errors[1].split(" ").slice(-1)[0];
-        assert(Number(lineNo) === 20);
+    it("should fail multiple times when exceeding the limit", function() {
+        var lessCode = [
+            "a {",
+            "   & + a {",
+            "       & + a {",
+            "           & + a {",
+            "               & + a {",   // Too far, begin failing here
+            "                   & + a {",
+            "                       & + a {",
+            "                           color: red;",
+            "                       }",
+            "                   }",
+            "               }",
+            "           }",
+            "       }",
+            "   }",
+            "}",
+        ].join("\n");
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 3);
+
+        // Grab the line numbers from the error messages
+        var lineNos = errors.map(function(error) {
+            return parseInt(error.split(" ").slice(-1)[0]);
+        });
+
+        assert(lineNos[0] === 5);
+        assert(lineNos[1] === 6);
+        assert(lineNos[2] === 7);
     });
 });
