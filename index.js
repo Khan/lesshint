@@ -1,22 +1,58 @@
 /**
  * The main module to run the linters.
  */
+var async = require("async");
 var less = require("less");
+var postcss = require("postcss");
+var sourceMap = require("source-map");
 
-var abcLint = require("./lib/abc-lint");
-var nestingLint = require("./lib/nesting-lint");
+var abcLinter = require("./lib/abc-lint");
+var overqualifiedLinter = require("./lib/overqualified-lint");
+var nestingLinter = require("./lib/nesting-lint");
+
+const CSS_LINTERS = [overqualifiedLinter];
+const LESS_LINTERS = [abcLinter, nestingLinter];
 
 module.exports = function(code) {
-    less.parse(code, function(err, ast) {
-        var errors = [];
+    var errors = [];
+    function reportError(error) {
+        errors.push(error);
+    }
 
-        // Run the tests
-        abcLint(code, ast, function(error) {
-            errors.push(error);
+    function runLessLinters(done) {
+        less.parse(code, function(err, ast) {
+            LESS_LINTERS.forEach(function(linter) {
+                linter(code, ast, reportError);
+            });
+
+            done();
         });
-        nestingLint(code, ast, function(error) {
-            errors.push(error);
+    }
+
+    function runCSSLinters(done) {
+        var options = {
+            sourceMap: {
+                outputSourceFiles: true,
+            },
+        };
+
+        less.render(code, options, function(err, result) {
+            var smc = new sourceMap.SourceMapConsumer(result.map);
+            var ast = postcss.parse(result.css);
+            CSS_LINTERS.forEach(function(linter) {
+                linter(ast, smc, reportError);
+            });
+
+            done();
         });
+    }
+
+    // Run the linter groups in parallel
+    async.parallel([runLessLinters, runCSSLinters], function(err) {
+        if (err) {
+            console.log(err);
+            process.exit(1);
+        }
 
         // Report any errors
         if (errors.length) {

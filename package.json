@@ -4,7 +4,10 @@
     "lesshint": "cli.js"
   },
   "dependencies": {
-    "less": "^2.5.1"
+    "async": "^1.4.2",
+    "less": "^2.5.1",
+    "postcss": "^5.0.4",
+    "source-map": "^0.4.4"
   },
   "devDependencies": {
     "babel": "^5.8.23",
