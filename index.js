@@ -1,5 +1,10 @@
-var abcLint = require("./lib/abc-lint");
+/**
+ * The main module to run the linters.
+ */
 var less = require("less");
+
+var abcLint = require("./lib/abc-lint");
+var nestingLint = require("./lib/nesting-list");
 
 module.exports = function(code) {
     less.parse(code, function(err, ast) {
@@ -7,6 +12,9 @@ module.exports = function(code) {
 
         // Run the tests
         abcLint(code, ast, function(error) {
+            errors.push(error);
+        });
+        nestingLint(code, ast, function(error) {
             errors.push(error);
         });
 
