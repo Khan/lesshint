@@ -44,10 +44,7 @@ describe("ABC linter", function() {
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
-
-        // Grab the line number from the error message
-        var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 3);
+        assert(errors[0].line === 3);
     });
 
     it("should pass for declarations with a single property", function() {
@@ -96,10 +93,7 @@ describe("ABC linter", function() {
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
-
-        // Grab the line number from the error message
-        var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 8);
+        assert(errors[0].line === 8);
     });
 
     // TODO: Consider variables as well, they should be above all declarations
@@ -114,9 +108,6 @@ describe("ABC linter", function() {
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
-
-        // Grab the line number from the error message
-        var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 4);
+        assert(errors[0].line === 4);
     })
 });

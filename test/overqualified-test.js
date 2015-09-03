@@ -80,19 +80,11 @@ describe("Overqualified linter", function() {
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
 
-        // Grab the line numbers from the error messages
-        var lineNos = errors.map(function(error) {
-            var pos = error.split(" ").slice(-1)[0];
-            var line = pos.split(":")[0];
+        assert(errors[0].line === 1);
+        assert(errors[0].reason.indexOf("div#main") > -1);
 
-            return parseInt(line);
-        });
-
-        assert(lineNos[0] === 1);
-        assert(errors[0].indexOf("div#main") > -1);
-
-        assert(lineNos[1] === 7);
-        assert(errors[1].indexOf("div#id") > -1);
+        assert(errors[1].line === 7);
+        assert(errors[1].reason.indexOf("div#id") > -1);
     });
 
     it("should fail for element.class", function() {
@@ -113,22 +105,11 @@ describe("Overqualified linter", function() {
         var errors = lintCode(lessCode);
         assert(errors.length === 3);
 
-        // Grab the line numbers from the error messages
-        var lineNos = errors.map(function(error) {
-            var pos = error.split(" ").slice(-1)[0];
-            var line = pos.split(":")[0];
+        assert(errors[0].line === 1);
+        assert(errors[0].reason.indexOf("div.centered") > -1);
 
-            return parseInt(line);
-        });
-
-        assert(lineNos[0] === 1);
-        assert(errors[0].indexOf("div.centered") > -1);
-
-        assert(lineNos[1] === 6);
-        assert(errors[1].indexOf("div.class") > -1);
-
-        assert(lineNos[2] === 8);
-        assert(errors[2].indexOf("div.second") > -1);
+        assert(errors[1].line === 6);
+        assert(errors[1].reason.indexOf("div.class") > -1);
     });
 
     it("should fail once per selector part", function() {
@@ -140,7 +121,7 @@ describe("Overqualified linter", function() {
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
-        assert(errors[0].indexOf("padded") === -1);
+        assert(errors[0].reason.indexOf("padded") === -1);
     });
 
     it("should pass for nested selectors", function() {
