@@ -21,6 +21,10 @@ module.exports = function(code) {
 
     function runLessLinters(done) {
         less.parse(code, function(err, ast) {
+            if (err) {
+                return done(err);
+            }
+
             LESS_LINTERS.forEach(function(linter) {
                 linter(code, ast, reportError);
             });
@@ -37,6 +41,11 @@ module.exports = function(code) {
         };
 
         less.render(code, options, function(err, result) {
+            if (err) {
+                return done(err);
+            }
+
+            // Establish a SourceMapConsumer to point to the original less
             var smc = new sourceMap.SourceMapConsumer(result.map);
             var ast = postcss.parse(result.css);
             CSS_LINTERS.forEach(function(linter) {

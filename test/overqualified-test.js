@@ -38,7 +38,7 @@ describe("Overqualified linter", function() {
                     padding: 0;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -57,7 +57,7 @@ describe("Overqualified linter", function() {
             #main.class {
                 color: gray;
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -74,7 +74,7 @@ describe("Overqualified linter", function() {
                     color: red;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
@@ -87,10 +87,10 @@ describe("Overqualified linter", function() {
             return parseInt(line);
         });
 
-        assert(lineNos[0] === 2);
+        assert(lineNos[0] === 1);
         assert(errors[0].indexOf("div#main") > -1);
 
-        assert(lineNos[1] === 7);
+        assert(lineNos[1] === 6);
         assert(errors[1].indexOf("div#id") > -1);
     });
 
@@ -105,7 +105,7 @@ describe("Overqualified linter", function() {
                     color: green;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
@@ -118,10 +118,10 @@ describe("Overqualified linter", function() {
             return parseInt(line);
         });
 
-        assert(lineNos[0] === 2);
+        assert(lineNos[0] === 1);
         assert(errors[0].indexOf("div.centered") > -1);
 
-        assert(lineNos[1] === 7);
+        assert(lineNos[1] === 6);
         assert(errors[1].indexOf("div.class") > -1);
     });
 
@@ -134,7 +134,7 @@ describe("Overqualified linter", function() {
                     color: red;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
