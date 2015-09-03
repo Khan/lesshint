@@ -68,7 +68,9 @@ module.exports = function(filename, code) {
         // Report any errors
         if (errors.length) {
             errors.forEach(function(error) {
-                console.log(error);
+                console.log(error.reason +
+                    " (line " + error.line +
+                    ", col: " + error.character + ")");
             });
 
             process.exit(1);
