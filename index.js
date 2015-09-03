@@ -13,7 +13,7 @@ var nestingLint = require("./lib/nesting-lint");
 const CSS_LINTERS = [overqualifiedLint];
 const LESS_LINTERS = [abcLint, nestingLint];
 
-module.exports = function(code) {
+module.exports = function(filename, code) {
     var errors = [];
     function reportError(error) {
         errors.push(error);

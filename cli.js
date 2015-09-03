@@ -9,4 +9,4 @@ if (process.argv.length < 3) {
 }
 
 var code = fs.readFileSync(process.argv[2], "utf-8");
-linter(code);
+linter(process.argv[2], code);
