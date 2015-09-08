@@ -27,7 +27,7 @@ describe("ABC linter", function() {
                 color: white;
                 margin: 0;
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -40,14 +40,14 @@ describe("ABC linter", function() {
                 background-color: black;
                 color: white;
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
 
         // Grab the line number from the error message
         var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 4);
+        assert(lineNo === 3);
     });
 
     it("should pass for declarations with a single property", function() {
@@ -56,7 +56,7 @@ describe("ABC linter", function() {
             a {
                 color: white;
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -74,7 +74,7 @@ describe("ABC linter", function() {
                     padding-top: 5px;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -92,14 +92,14 @@ describe("ABC linter", function() {
                     background-color: green;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
 
         // Grab the line number from the error message
         var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 9);
+        assert(lineNo === 8);
     });
 
     // TODO: Consider variables as well, they should be above all declarations
@@ -110,13 +110,13 @@ describe("ABC linter", function() {
                 @abc: 400;
                 color: white;
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
 
         // Grab the line number from the error message
         var lineNo = parseInt(errors[0].split(" ").slice(-1)[0]);
-        assert(lineNo === 5);
+        assert(lineNo === 4);
     })
 });

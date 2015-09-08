@@ -44,7 +44,7 @@ describe("Nesting linter", function() {
                     color: red;
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -65,7 +65,7 @@ describe("Nesting linter", function() {
                     }
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -90,7 +90,7 @@ describe("Nesting linter", function() {
                     }
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);
@@ -122,7 +122,7 @@ describe("Nesting linter", function() {
                     }
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 2);
@@ -132,8 +132,8 @@ describe("Nesting linter", function() {
             return parseInt(error.split(" ").slice(-1)[0]);
         });
 
-        assert(lineNos[0] === 16);
-        assert(lineNos[1] === 21);
+        assert(lineNos[0] === 15);
+        assert(lineNos[1] === 20);
     });
 
     it("should fail multiple times when exceeding the limit", function() {
@@ -153,7 +153,7 @@ describe("Nesting linter", function() {
                     }
                 }
             }
-        `;
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 3);
@@ -163,8 +163,8 @@ describe("Nesting linter", function() {
             return parseInt(error.split(" ").slice(-1)[0]);
         });
 
-        assert(lineNos[0] === 6);
-        assert(lineNos[1] === 7);
-        assert(lineNos[2] === 8);
+        assert(lineNos[0] === 5);
+        assert(lineNos[1] === 6);
+        assert(lineNos[2] === 7);
     });
 });
