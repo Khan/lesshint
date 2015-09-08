@@ -61,16 +61,15 @@ module.exports = function(filename, code) {
         if (err) {
             // Parsing error
             var location = "(" + err.line + ":" + err.column + ")";
-            console.log("Error parsing: unrecognized input " + location);
+            console.log(location + " Error parsing: unrecognized input");
             process.exit(1);
         }
 
         // Report any errors
         if (errors.length) {
             errors.forEach(function(error) {
-                console.log(error.reason +
-                    " (line " + error.line +
-                    ", col: " + error.character + ")");
+                var location = "(" + error.line + ":" + error.character + ")";
+                console.log(location + " " + error.reason);
             });
 
             process.exit(1);
