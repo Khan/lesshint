@@ -6,17 +6,19 @@ var indexToLocation = require("../lib/index-to-location");
 
 describe("Index to location", function() {
     var code =
-        "12345\n" +
-        "54321\n" +
-        "67890\n" +
-        "09876";
+        "01234\n" +
+        "56789\n" +
+        "01234\n" +
+        "56789";
 
     it("should correctly point to the first line", function() {
         // First character
         assert(1 === indexToLocation(code, 0).line);
+        assert(1 === indexToLocation(code, 0).column);
 
         // Last character
         assert(1 === indexToLocation(code, 4).line);
+        assert(5 === indexToLocation(code, 4).column);
     });
 
     it("should correctly point to subsequent lines", function() {
@@ -26,15 +28,19 @@ describe("Index to location", function() {
     });
 
     it("should interpret newline characters on the next line", function() {
-        // New line
+        // Newline characters are on the next line, at the 1st column
         assert(2 === indexToLocation(code, 5).line);
+        assert(1 === indexToLocation(code, 5).column);
 
-        // New line
         assert(3 === indexToLocation(code, 11).line);
+        assert(1 === indexToLocation(code, 5).column);
     });
 
     it("should cap off extreme values", function() {
         assert(1 === indexToLocation(code, -1).line);
+        assert(1 === indexToLocation(code, -1).column);
+
         assert(4 === indexToLocation(code, 1000).line);
+        assert(1 === indexToLocation(code, 1000).column);
     });
 });
