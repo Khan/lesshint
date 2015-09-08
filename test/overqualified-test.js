@@ -70,6 +70,7 @@ describe("Overqualified linter", function() {
             }
 
             div {
+                p,
                 &#id {
                     color: red;
                 }
@@ -90,7 +91,7 @@ describe("Overqualified linter", function() {
         assert(lineNos[0] === 1);
         assert(errors[0].indexOf("div#main") > -1);
 
-        assert(lineNos[1] === 6);
+        assert(lineNos[1] === 7);
         assert(errors[1].indexOf("div#id") > -1);
     });
 
@@ -100,15 +101,17 @@ describe("Overqualified linter", function() {
                 margin: 0 auto;
             }
 
-            div {
-                &.class {
+            .main > div {
+                &.class,
+
+                &.second {
                     color: green;
                 }
             }
         `.trim();
 
         var errors = lintCode(lessCode);
-        assert(errors.length === 2);
+        assert(errors.length === 3);
 
         // Grab the line numbers from the error messages
         var lineNos = errors.map(function(error) {
@@ -123,6 +126,21 @@ describe("Overqualified linter", function() {
 
         assert(lineNos[1] === 6);
         assert(errors[1].indexOf("div.class") > -1);
+
+        assert(lineNos[2] === 8);
+        assert(errors[2].indexOf("div.second") > -1);
+    });
+
+    it("should fail once per selector part", function() {
+        var lessCode = `
+            div.centered.padded {
+                margin: 0 auto;
+            }
+        `.trim();
+
+        var errors = lintCode(lessCode);
+        assert(errors.length === 1);
+        assert(errors[0].indexOf("padded") === -1);
     });
 
     it("should pass for nested selectors", function() {
