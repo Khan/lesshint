@@ -9,6 +9,7 @@
         "comma-dangle": [2, "always-multiline"],
         "quotes": [2, "double"],
         "no-unused-vars": 2,
+        "semi": [2, "always"],
         "space-after-keywords": 2,
         "space-infix-ops": 2,
         "strict": 0

@@ -27,7 +27,7 @@ describe("Nesting linter", function() {
                 color: white;
                 margin: 0;
             }
-        `
+        `.trim();
 
         var errors = lintCode(lessCode);
         assert(errors.length === 0);

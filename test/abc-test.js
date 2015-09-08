@@ -109,5 +109,5 @@ describe("ABC linter", function() {
         var errors = lintCode(lessCode);
         assert(errors.length === 1);
         assert(errors[0].line === 4);
-    })
+    });
 });
