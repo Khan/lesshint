@@ -40,6 +40,9 @@ describe("Index to location", function() {
         assert(1 === indexToLocation(code, -1).line);
         assert(1 === indexToLocation(code, -1).column);
 
+        assert(1 === indexToLocation(code, -1000).line);
+        assert(1 === indexToLocation(code, -1000).column);
+
         assert(4 === indexToLocation(code, 1000).line);
         assert(1 === indexToLocation(code, 1000).column);
     });
