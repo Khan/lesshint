@@ -29,7 +29,8 @@ module.exports = function(filename, code) {
                 });
             });
 
-            async.parallel(callbacks, done);
+            // Run the linters in parallel
+            return async.parallel(callbacks, done);
         });
     }
 
@@ -56,7 +57,8 @@ module.exports = function(filename, code) {
                 });
             });
 
-            async.parallel(callbacks, done);
+            // Run the linters in parallel
+            return async.parallel(callbacks, done);
         });
     }
 
