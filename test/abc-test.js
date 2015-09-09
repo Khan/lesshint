@@ -7,20 +7,18 @@ var less = require("less");
 var abcLint = require("../lib/abc-lint");
 
 // Run the ABC linter on a given snippet of Less code
-function lintCode(code) {
-    var errors = [];
-
+function lintCode(code, callback) {
     less.parse(code, function(err, ast) {
-        abcLint(code, ast, function(err) {
-            errors.push(err);
-        });
-    });
+        if (err) {
+            return callback(err);
+        }
 
-    return errors;
+        abcLint(code, ast, callback);
+    });
 }
 
 describe("ABC linter", function() {
-    it("should pass for alphabetized properties", function() {
+    it("should pass for alphabetized properties", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -29,11 +27,17 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should fail when properties are out of order", function() {
+    it("should fail when properties are out of order", function(done) {
         var lessCode = `
             a {
                 margin: 0;
@@ -42,12 +46,18 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 1);
-        assert(errors[0].line === 3);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 1);
+            assert(violations[0].line === 3);
+            done();
+        });
     });
 
-    it("should pass for declarations with a single property", function() {
+    it("should pass for declarations with a single property", function(done) {
         var lessCode = `
             p,
             a {
@@ -55,11 +65,17 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should pass when properties are nested and in order", function() {
+    it("should pass when properties are nested and in order", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -73,11 +89,17 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should fail when properties are nested and out of order", function() {
+    it("should fail when properties are nested and out of order", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -91,13 +113,19 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 1);
-        assert(errors[0].line === 8);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 1);
+            assert(violations[0].line === 8);
+            done();
+        });
     });
 
     // TODO: Consider variables as well, they should be above all declarations
-    it("should ignore variables", function() {
+    it("should ignore variables", function(done) {
         var lessCode = `
             a {
                 width: 40px;
@@ -106,8 +134,14 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 1);
-        assert(errors[0].line === 4);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 1);
+            assert(violations[0].line === 4);
+            done();
+        });
     });
 });

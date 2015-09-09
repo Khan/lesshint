@@ -9,8 +9,7 @@ var sourceMap = require("source-map");
 var overqualifiedLint = require("../lib/overqualified-lint");
 
 // Run the nesting linter on a given snippet of Less code
-function lintCode(code) {
-    var errors = [];
+function lintCode(code, callback) {
     var options = {
         sourceMap: {
             outputSourceFiles: true,
@@ -18,18 +17,18 @@ function lintCode(code) {
     };
 
     less.render(code, options, function(err, result) {
+        if (err) {
+            return callback(err);
+        }
+
         var smc = new sourceMap.SourceMapConsumer(result.map);
         var ast = postcss.parse(result.css);
-        overqualifiedLint(ast, smc, function(err) {
-            errors.push(err);
-        });
+        overqualifiedLint(ast, smc, callback);
     });
-
-    return errors;
 }
 
 describe("Overqualified linter", function() {
-    it("should pass for elements without ids and classes", function() {
+    it("should pass for elements without ids and classes", function(done) {
         var lessCode = `
             ul {
                 color: red;
@@ -40,11 +39,17 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should pass for ids and classes without elements", function() {
+    it("should pass for ids and classes without elements", function(done) {
         var lessCode = `
             #id {
                 color: red;
@@ -59,11 +64,17 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should fail for element#id", function() {
+    it("should fail for element#id", function(done) {
         var lessCode = `
             div#main {
                 color: black;
@@ -77,17 +88,24 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 2);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
 
-        assert(errors[0].line === 1);
-        assert(errors[0].reason.indexOf("div#main") > -1);
+            assert(violations.length === 2);
 
-        assert(errors[1].line === 7);
-        assert(errors[1].reason.indexOf("div#id") > -1);
+            assert(violations[0].line === 1);
+            assert(violations[0].reason.indexOf("div#main") > -1);
+
+            assert(violations[1].line === 7);
+            assert(violations[1].reason.indexOf("div#id") > -1);
+
+            done();
+        });
     });
 
-    it("should fail for element.class", function() {
+    it("should fail for element.class", function(done) {
         var lessCode = `
             div.centered {
                 margin: 0 auto;
@@ -102,29 +120,42 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 3);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
 
-        assert(errors[0].line === 1);
-        assert(errors[0].reason.indexOf("div.centered") > -1);
+            assert(violations.length === 3);
 
-        assert(errors[1].line === 6);
-        assert(errors[1].reason.indexOf("div.class") > -1);
+            assert(violations[0].line === 1);
+            assert(violations[0].reason.indexOf("div.centered") > -1);
+
+            assert(violations[1].line === 6);
+            assert(violations[1].reason.indexOf("div.class") > -1);
+
+            done();
+        });
     });
 
-    it("should fail once per selector part", function() {
+    it("should fail once per selector part", function(done) {
         var lessCode = `
             div.centered.padded {
                 margin: 0 auto;
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 1);
-        assert(errors[0].reason.indexOf("padded") === -1);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 1);
+            assert(violations[0].reason.indexOf("padded") === -1);
+            done();
+        });
     });
 
-    it("should pass for nested selectors", function() {
+    it("should pass for nested selectors", function(done) {
         // NOTE: "div #id" is still unnecessary, but not for the purposes of
         // this linter
         var lessCode = `
@@ -135,7 +166,13 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 });

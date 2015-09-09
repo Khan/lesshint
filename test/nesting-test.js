@@ -7,20 +7,18 @@ var less = require("less");
 var nestingLint = require("../lib/nesting-lint");
 
 // Run the nesting linter on a given snippet of Less code
-function lintCode(code) {
-    var errors = [];
-
+function lintCode(code, callback) {
     less.parse(code, function(err, ast) {
-        nestingLint(code, ast, function(err) {
-            errors.push(err);
-        });
-    });
+        if (err) {
+            return callback(err);
+        }
 
-    return errors;
+        nestingLint(code, ast, callback);
+    });
 }
 
 describe("Nesting linter", function() {
-    it("should pass for single rules", function() {
+    it("should pass for single rules", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -29,11 +27,17 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should pass for single-nested rules", function() {
+    it("should pass for single-nested rules", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -46,11 +50,17 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should pass for twice-nested rules", function() {
+    it("should pass for twice-nested rules", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -67,11 +77,17 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should pass for three-times-nested rules", function() {
+    it("should pass for three-times-nested rules", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -92,11 +108,17 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 0);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            assert(violations.length === 0);
+            done();
+        });
     });
 
-    it("should fail for four-times-nested rules", function() {
+    it("should fail for four-times-nested rules", function(done) {
         var lessCode = `
             a {
                 background-color: black;
@@ -124,14 +146,19 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 2);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
 
-        assert(errors[0].line === 15);
-        assert(errors[1].line === 20);
+            assert(violations.length === 2);
+            assert(violations[0].line === 15);
+            assert(violations[1].line === 20);
+            done();
+        });
     });
 
-    it("should fail multiple times when exceeding the limit", function() {
+    it("should fail multiple times when exceeding the limit", function(done) {
         var lessCode = `
             a {
                 & + a {
@@ -150,11 +177,16 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        var errors = lintCode(lessCode);
-        assert(errors.length === 3);
+        lintCode(lessCode, function(err, violations) {
+            if (err) {
+                throw err;
+            }
 
-        assert(errors[0].line === 5);
-        assert(errors[1].line === 6);
-        assert(errors[2].line === 7);
+            assert(violations.length === 3);
+            assert(violations[0].line === 5);
+            assert(violations[1].line === 6);
+            assert(violations[2].line === 7);
+            done();
+        });
     });
 });
