@@ -25,7 +25,7 @@ module.exports = function(filename, code) {
 
             LESS_LINTERS.forEach(function(linter) {
                 callbacks.push(function(callback) {
-                    linter(code, ast, callback)
+                    linter(code, ast, callback);
                 });
             });
 
