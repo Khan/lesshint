@@ -8,11 +8,12 @@ var postcss = require("postcss");
 var sourceMap = require("source-map");
 
 var abcLint = require("./lib/abc-lint");
+var colorVariableLint = require("./lib/color-variable-lint");
 var overqualifiedLint = require("./lib/overqualified-lint");
 var nestingLint = require("./lib/nesting-lint");
 
 const CSS_LINTERS = [overqualifiedLint];
-const LESS_LINTERS = [abcLint, nestingLint];
+const LESS_LINTERS = [abcLint, colorVariableLint, nestingLint];
 
 module.exports = function(filename, code) {
     function runLessLinters(done) {
@@ -66,7 +67,7 @@ module.exports = function(filename, code) {
     async.parallel([runLessLinters, runCSSLinters], function(err, results) {
         if (err) {
             // Parsing error
-            var location = "(" + err.line + ":" + err.column + ")";
+            var location = "(" + err.line + ":" + err.character + ")";
             console.log(location + " Error parsing: unrecognized input");
             process.exit(1);
         }
