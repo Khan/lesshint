@@ -10,10 +10,16 @@ var nestingLint = require("../lib/nesting-lint");
 function lintCode(code, callback) {
     less.parse(code, function(err, ast) {
         if (err) {
-            return callback(err);
+            throw err;
         }
 
-        nestingLint(code, ast, callback);
+        nestingLint(code, ast, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            callback(violations);
+        });
     });
 }
 
@@ -27,11 +33,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -50,11 +52,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -77,11 +75,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -108,11 +102,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -146,11 +136,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 2);
             assert(violations[0].line === 15);
             assert(violations[1].line === 20);
@@ -177,11 +163,7 @@ describe("Nesting linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 3);
             assert(violations[0].line === 5);
             assert(violations[1].line === 6);

@@ -18,12 +18,18 @@ function lintCode(code, callback) {
 
     less.render(code, options, function(err, result) {
         if (err) {
-            return callback(err);
+            throw err;
         }
 
         var smc = new sourceMap.SourceMapConsumer(result.map);
         var ast = postcss.parse(result.css);
-        overqualifiedLint(ast, smc, callback);
+        overqualifiedLint(ast, smc, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            callback(violations);
+        });
     });
 }
 
@@ -39,11 +45,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -64,11 +66,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -88,11 +86,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 2);
 
             assert(violations[0].line === 1);
@@ -120,11 +114,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 3);
 
             assert(violations[0].line === 1);
@@ -144,11 +134,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 1);
             assert(violations[0].reason.indexOf("padded") === -1);
             done();
@@ -166,11 +152,7 @@ describe("Overqualified linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });

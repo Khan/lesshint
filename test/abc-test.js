@@ -10,10 +10,16 @@ var abcLint = require("../lib/abc-lint");
 function lintCode(code, callback) {
     less.parse(code, function(err, ast) {
         if (err) {
-            return callback(err);
+            throw err;
         }
 
-        abcLint(code, ast, callback);
+        abcLint(code, ast, function(err, violations) {
+            if (err) {
+                throw err;
+            }
+
+            callback(violations);
+        });
     });
 }
 
@@ -27,11 +33,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -46,11 +48,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 1);
             assert(violations[0].line === 3);
             done();
@@ -65,11 +63,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -89,11 +83,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 0);
             done();
         });
@@ -113,11 +103,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 1);
             assert(violations[0].line === 8);
             done();
@@ -134,11 +120,7 @@ describe("ABC linter", function() {
             }
         `.trim();
 
-        lintCode(lessCode, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
+        lintCode(lessCode, function(violations) {
             assert(violations.length === 1);
             assert(violations[0].line === 4);
             done();
