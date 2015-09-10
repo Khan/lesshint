@@ -21,7 +21,7 @@ function countInvocations(walkFn, lessCode, callback) {
             done();
         }, function() {
             // When all is said and done, invoke callback with the count
-            callback(null, count);
+            callback(count);
         });
     });
 }
@@ -30,7 +30,7 @@ describe("AST walker", function() {
     it("should always invoke on the root", function(done) {
         var lessCode = "";
 
-        countInvocations(walker.walkAST, lessCode, function(err, count) {
+        countInvocations(walker.walkAST, lessCode, function(count) {
             assert(count === 1);
             done();
         });
@@ -46,7 +46,7 @@ describe("AST walker", function() {
             }
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(err, count) {
+        countInvocations(walker.walkAST, lessCode, function(count) {
             // * `root`
             // * @var1
             // * @var2
@@ -68,7 +68,7 @@ describe("AST walker", function() {
             }
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(err, count) {
+        countInvocations(walker.walkAST, lessCode, function(count) {
             // * `root`
             // * p
             // * background-color
@@ -86,7 +86,7 @@ describe("AST walker", function() {
             a {}
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(err, count) {
+        countInvocations(walker.walkAST, lessCode, function(count) {
             // * `root`
             // * comment
             // * comment
@@ -102,7 +102,7 @@ describe("AST walker", function() {
             @b: lighten(blue, 25%);
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(err, count) {
+        countInvocations(walker.walkAST, lessCode, function(count) {
             assert(count === 3);
             done();
         });
@@ -120,7 +120,7 @@ describe("Rule walker", function() {
             }
         `;
 
-        countInvocations(walker.walkRules, lessCode, function(err, count) {
+        countInvocations(walker.walkRules, lessCode, function(count) {
             assert(count === 1);
             done();
         });
@@ -145,7 +145,7 @@ describe("Rule walker", function() {
             }
         `;
 
-        countInvocations(walker.walkRules, lessCode, function(err, count) {
+        countInvocations(walker.walkRules, lessCode, function(count) {
             assert(count === 4);
             done();
         });
@@ -154,7 +154,7 @@ describe("Rule walker", function() {
     it("should not invoke for the root", function(done) {
         var lessCode = "";
 
-        countInvocations(walker.walkRules, lessCode, function(err, count) {
+        countInvocations(walker.walkRules, lessCode, function(count) {
             assert(count === 0);
             done();
         });
@@ -169,7 +169,7 @@ describe("Rule walker", function() {
             }
         `;
 
-        countInvocations(walker.walkRules, lessCode, function(err, count) {
+        countInvocations(walker.walkRules, lessCode, function(count) {
             assert(count === 1);
             done();
         });
