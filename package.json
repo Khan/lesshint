@@ -23,7 +23,8 @@
     "parse-color": "^1.0.0",
     "postcss": "^5.0.4",
     "postcss-selector-parser": "^1.2.0",
-    "source-map": "^0.4.4"
+    "source-map": "^0.4.4",
+    "traverse": "^0.6.6"
   },
   "devDependencies": {
     "babel": "^5.8.23",
