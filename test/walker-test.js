@@ -26,11 +26,11 @@ function countInvocations(walkFn, lessCode, callback) {
     });
 }
 
-describe("AST walker", function() {
+describe("Node walker", function() {
     it("should always invoke on the root", function(done) {
         var lessCode = "";
 
-        countInvocations(walker.walkAST, lessCode, function(count) {
+        countInvocations(walker.walk, lessCode, function(count) {
             assert(count === 1);
             done();
         });
@@ -46,7 +46,7 @@ describe("AST walker", function() {
             }
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(count) {
+        countInvocations(walker.walk, lessCode, function(count) {
             // * `root`
             // * @var1
             // * @var2
@@ -68,7 +68,7 @@ describe("AST walker", function() {
             }
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(count) {
+        countInvocations(walker.walk, lessCode, function(count) {
             // * `root`
             // * p
             // * background-color
@@ -86,7 +86,7 @@ describe("AST walker", function() {
             a {}
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(count) {
+        countInvocations(walker.walk, lessCode, function(count) {
             // * `root`
             // * comment
             // * comment
@@ -102,7 +102,7 @@ describe("AST walker", function() {
             @b: lighten(blue, 25%);
         `;
 
-        countInvocations(walker.walkAST, lessCode, function(count) {
+        countInvocations(walker.walk, lessCode, function(count) {
             assert(count === 3);
             done();
         });
