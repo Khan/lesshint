@@ -186,4 +186,17 @@ describe("Color variable linter", function() {
             done();
         });
     });
+
+    it("should ignore inline rgb() values with math in them", function(done) {
+        var lessCode = `
+            a {
+                color: rgb(10 * 20, 0, 0);
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert.equal(violations.length, 0);
+            done();
+        });
+    });
 });
