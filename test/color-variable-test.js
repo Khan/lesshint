@@ -105,6 +105,23 @@ describe("Color variable linter", function() {
         });
     });
 
+    it("should extract colors from anywhere in a declaration", function(done) {
+        var lessCode = `
+            @green: #0e0;
+
+            a {
+                border: 1px solid #000;
+                box-shadow: 2px 2px 2px 2px rgba(0, 255, 0, 0.9);
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert(violations[0].reason.indexOf("0,0,0") > -1);
+            assert(violations[1].reason.indexOf("@green") > -1);
+            done();
+        });
+    });
+
     it("should fail when inline colors are mixed with variables", function(done) {
         var lessCode = `
             @red: rgb(255, 0, 100);
