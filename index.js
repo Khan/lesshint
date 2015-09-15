@@ -23,10 +23,10 @@ module.exports = function(filename, code) {
             }
 
             var callbacks = [];
-            LESS_LINTERS.forEach(function(linter) {
+            LESS_LINTERS.forEach(function(lessLinter) {
                 callbacks.push(function(callback) {
                     try {
-                        linter(code, ast, callback);
+                        lessLinter(code, ast, callback);
                     } catch (err) {
                         // Critical failure, fail with a stack trace for
                         // debugging
@@ -58,10 +58,10 @@ module.exports = function(filename, code) {
             // Establish a SourceMapConsumer to point to the original less
             var smc = new sourceMap.SourceMapConsumer(result.map);
             var ast = postcss.parse(result.css);
-            CSS_LINTERS.forEach(function(linter) {
+            CSS_LINTERS.forEach(function(cssLinter) {
                 callbacks.push(function(callback) {
                     try {
-                        linter(ast, smc, callback);
+                        cssLinter(ast, smc, callback);
                     } catch (err) {
                         // Critical failure, fail with a stack trace for
                         // debugging
