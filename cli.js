@@ -1,12 +1,17 @@
 #!/usr/bin/env node
-
 var fs = require("fs");
-var linter = require("./");
+var path = require("path");
+
+var lesshint = require("./");
 
 if (process.argv.length < 3) {
     console.log("USAGE: lesshint [file]");
     process.exit(1);
 }
 
-var code = fs.readFileSync(process.argv[2], "utf-8");
-linter(process.argv[2], code);
+var filename = process.argv[2];
+var code = fs.readFileSync(filename, "utf-8");
+
+// chdir() into the file's directory to make relative @import statements work
+process.chdir(path.dirname(filename));
+lesshint(filename, code, options);
