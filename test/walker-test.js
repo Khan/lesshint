@@ -103,6 +103,9 @@ describe("Node walker", function() {
         `;
 
         countInvocations(walker.walk, lessCode, function(count) {
+            // * `root`
+            // * @a:
+            // * @b:
             assert(count === 3);
             done();
         });
@@ -121,6 +124,7 @@ describe("Rule walker", function() {
         `;
 
         countInvocations(walker.walkRules, lessCode, function(count) {
+            // * p {}
             assert(count === 1);
             done();
         });
@@ -146,6 +150,10 @@ describe("Rule walker", function() {
         `;
 
         countInvocations(walker.walkRules, lessCode, function(count) {
+            // * div {}
+            // * div {}
+            // * div {}
+            // * div {}
             assert(count === 4);
             done();
         });
@@ -170,6 +178,7 @@ describe("Rule walker", function() {
         `;
 
         countInvocations(walker.walkRules, lessCode, function(count) {
+            // * div {}
             assert(count === 1);
             done();
         });
