@@ -213,4 +213,40 @@ describe("Color variable linter", function() {
             done();
         });
     });
+
+    it("should look in imported files for color variable suggestions", function(done) {
+        var lessCode = `
+            @import "test/colors.less";
+
+            a {
+                color: #000;
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert.equal(violations.length, 1);
+            assert(violations[0].reason.indexOf("@black") > -1);
+            assert(violations[0].reason.indexOf("colors.less") > -1);
+            done();
+        });
+    });
+
+    it("should look not suggest colors from ignored directories", function(done) {
+        var lessCode = `
+            @import "test/colors.less";
+
+            a {
+                color: #000;
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert.equal(violations.length, 1);
+            assert.equal(violations[0].reason.indexOf("@black"), -1);
+            assert.equal(violations[0].reason.indexOf("colors.less"), -1);
+            done();
+        }, {
+            ignore: ["test"],
+        });
+    });
 });
