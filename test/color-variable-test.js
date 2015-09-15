@@ -99,7 +99,7 @@ describe("Color variable linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations[0].reason.indexOf("0,0,0") > -1);
+            assert(violations[0].reason.indexOf("#000000") > -1);
             assert(violations[1].reason.indexOf("@green") > -1);
             done();
         });
