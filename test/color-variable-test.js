@@ -171,6 +171,20 @@ describe("Color variable linter", function() {
         });
     });
 
+    it("should report inline colors in hex format", function(done) {
+        var lessCode = `
+            a {
+                color: rgb(0, 0, 255);
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert.equal(violations.length, 1);
+            assert(violations[0].reason.indexOf("#0000ff") > -1);
+            done();
+        });
+    });
+
     it("should not suggest a variable that is too far", function(done) {
         var lessCode = `
             @red: rgb(255, 10, 20);
