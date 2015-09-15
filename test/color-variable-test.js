@@ -1,5 +1,5 @@
 /**
- * Tests the ABC linter.
+ * Tests the Color Variable Linter.
  */
 var assert = require("assert");
 var less = require("less");
