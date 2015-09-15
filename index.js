@@ -23,10 +23,16 @@ module.exports = function(filename, code) {
             }
 
             var callbacks = [];
-
             LESS_LINTERS.forEach(function(linter) {
                 callbacks.push(function(callback) {
-                    linter(code, ast, callback);
+                    try {
+                        linter(code, ast, callback);
+                    } catch (err) {
+                        // Critical failure, fail with a stack trace for
+                        // debugging
+                        console.log(err.stack);
+                        process.exit(1);
+                    }
                 });
             });
 
@@ -54,7 +60,14 @@ module.exports = function(filename, code) {
             var ast = postcss.parse(result.css);
             CSS_LINTERS.forEach(function(linter) {
                 callbacks.push(function(callback) {
-                    linter(ast, smc, callback);
+                    try {
+                        linter(ast, smc, callback);
+                    } catch (err) {
+                        // Critical failure, fail with a stack trace for
+                        // debugging
+                        console.log(err.stack);
+                        process.exit(1);
+                    }
                 });
             });
 
@@ -67,8 +80,10 @@ module.exports = function(filename, code) {
     async.parallel([runLessLinters, runCSSLinters], function(err, results) {
         if (err) {
             // Parsing error
-            var location = "(" + err.line + ":" + err.character + ")";
-            console.log(location + " Error parsing: unrecognized input");
+            var column = (err.column || err.character + 1);
+            var location = "(" + err.line + ":" + column + ")";
+            console.log(location +
+                " Error parsing: unrecognized input - " + err.message);
             process.exit(1);
         }
 
