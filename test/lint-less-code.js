@@ -8,7 +8,9 @@ var less = require("less");
 function lintLessCode(linter) {
     // After accepting a linter, return a function that can be invoked with
     // some Less code, and a callback function
-    return function(code, callback) {
+    return function(code, callback, options) {
+        options = options || {};
+
         // Waterfall two async functions into each other, the less parsing
         // step, followed by the linting step
         async.waterfall([
@@ -24,7 +26,7 @@ function lintLessCode(linter) {
             },
 
             function(ast, next) {
-                linter(code, ast, next);
+                linter(code, ast, options, next);
             },
         ], function(err, violations) {
             // Throwing errors does not have the desired effect in mocha

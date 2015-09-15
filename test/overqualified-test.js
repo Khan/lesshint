@@ -23,7 +23,7 @@ function lintCode(code, callback) {
 
         var smc = new sourceMap.SourceMapConsumer(result.map);
         var ast = postcss.parse(result.css);
-        overqualifiedLint(ast, smc, function(err, violations) {
+        overqualifiedLint(ast, smc, {}, function(err, violations) {
             if (err) {
                 throw err;
             }

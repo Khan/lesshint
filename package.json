@@ -20,6 +20,7 @@
     "async": "^1.4.2",
     "less": "^2.5.1",
     "lodash.flatten": "^3.0.2",
+    "lodash.intersection": "^3.2.0",
     "parse-color": "^1.0.0",
     "postcss": "^5.0.4",
     "postcss-selector-parser": "^1.2.0",

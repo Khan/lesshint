@@ -15,7 +15,9 @@ var nestingLint = require("./lib/nesting-lint");
 const CSS_LINTERS = [overqualifiedLint];
 const LESS_LINTERS = [abcLint, colorVariableLint, nestingLint];
 
-module.exports = function(filename, code) {
+module.exports = function(filename, code, options) {
+    options = options || {};
+
     function runLessLinters(done) {
         less.parse(code, function(err, ast) {
             if (err) {
@@ -26,7 +28,7 @@ module.exports = function(filename, code) {
             LESS_LINTERS.forEach(function(lessLinter) {
                 callbacks.push(function(callback) {
                     try {
-                        lessLinter(code, ast, callback);
+                        lessLinter(code, ast, options, callback);
                     } catch (err) {
                         // Critical failure, fail with a stack trace for
                         // debugging
@@ -61,7 +63,7 @@ module.exports = function(filename, code) {
             CSS_LINTERS.forEach(function(cssLinter) {
                 callbacks.push(function(callback) {
                     try {
-                        cssLinter(ast, smc, callback);
+                        cssLinter(ast, smc, options, callback);
                     } catch (err) {
                         // Critical failure, fail with a stack trace for
                         // debugging
