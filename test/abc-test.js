@@ -2,26 +2,9 @@
  * Tests the ABC linter.
  */
 var assert = require("assert");
-var less = require("less");
 
 var abcLint = require("../lib/abc-lint");
-
-// Run the ABC linter on a given snippet of Less code
-function lintCode(code, callback) {
-    less.parse(code, function(err, ast) {
-        if (err) {
-            throw err;
-        }
-
-        abcLint(code, ast, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
-            callback(violations);
-        });
-    });
-}
+var lintCode = require("./lint-less-code")(abcLint);
 
 describe("ABC linter", function() {
     it("should pass for alphabetized properties", function(done) {

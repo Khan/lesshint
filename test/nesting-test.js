@@ -2,26 +2,9 @@
  * Tests the nesting linter.
  */
 var assert = require("assert");
-var less = require("less");
 
 var nestingLint = require("../lib/nesting-lint");
-
-// Run the nesting linter on a given snippet of Less code
-function lintCode(code, callback) {
-    less.parse(code, function(err, ast) {
-        if (err) {
-            throw err;
-        }
-
-        nestingLint(code, ast, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
-            callback(violations);
-        });
-    });
-}
+var lintCode = require("./lint-less-code")(nestingLint);
 
 describe("Nesting linter", function() {
     it("should pass for single rules", function(done) {

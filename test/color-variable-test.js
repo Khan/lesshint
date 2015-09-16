@@ -2,26 +2,9 @@
  * Tests the Color Variable Linter.
  */
 var assert = require("assert");
-var less = require("less");
 
 var colorVariableLint = require("../lib/color-variable-lint");
-
-// Run the color variable linter on a given snippet of Less code
-function lintCode(code, callback) {
-    less.parse(code, function(err, ast) {
-        if (err) {
-            throw err;
-        }
-
-        colorVariableLint(code, ast, function(err, violations) {
-            if (err) {
-                throw err;
-            }
-
-            callback(violations);
-        });
-    });
-}
+var lintCode = require("./lint-less-code")(colorVariableLint);
 
 describe("Color variable linter", function() {
     it("should pass when no colors are used", function(done) {
