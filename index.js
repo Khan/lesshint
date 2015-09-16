@@ -81,9 +81,9 @@ module.exports = function(filename, code, options) {
     // Run the linter groups in parallel
     async.parallel([runLessLinters, runCSSLinters], function(err, results) {
         if (err) {
-            // Parsing error
-            var column = (err.column || err.character + 1);
-            var location = "(" + err.line + ":" + column + ")";
+            // Parsing error - add one to the column for consistency with
+            // violation columns, which are 1-indexed
+            var location = "(" + err.line + ":" + (err.column + 1) + ")";
             console.log(location +
                 " Error parsing: unrecognized input - " + err.message);
             process.exit(1);
