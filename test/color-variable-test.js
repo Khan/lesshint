@@ -231,7 +231,7 @@ describe("Color variable linter", function() {
         });
     });
 
-    it("should look not suggest colors from ignored directories", function(done) {
+    it("should not suggest colors from ignored directories", function(done) {
         var lessCode = `
             @import "test/colors.less";
 

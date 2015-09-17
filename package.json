@@ -33,7 +33,7 @@
     "mocha": "^2.3.0"
   },
   "scripts": {
-    "test": "mocha --require babel-hook test/*.js",
+    "test": "mocha --timeout 200 --require babel-hook test/*.js",
     "lint": "eslint index.js lib test"
   }
 }

@@ -46,7 +46,7 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 0);
+            assert.equal(violations.length, 0);
             done();
         });
     });
@@ -67,7 +67,7 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 0);
+            assert.equal(violations.length, 0);
             done();
         });
     });
@@ -87,12 +87,12 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 2);
+            assert.equal(violations.length, 2);
 
-            assert(violations[0].line === 1);
+            assert.equal(violations[0].line, 1);
             assert(violations[0].reason.indexOf("div#main") > -1);
 
-            assert(violations[1].line === 7);
+            assert.equal(violations[1].line, 7);
             assert(violations[1].reason.indexOf("div#id") > -1);
 
             done();
@@ -115,12 +115,12 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 3);
+            assert.equal(violations.length, 3);
 
-            assert(violations[0].line === 1);
+            assert.equal(violations[0].line, 1);
             assert(violations[0].reason.indexOf("div.centered") > -1);
 
-            assert(violations[1].line === 6);
+            assert.equal(violations[1].line, 6);
             assert(violations[1].reason.indexOf("div.class") > -1);
 
             done();
@@ -135,7 +135,7 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 1);
+            assert.equal(violations.length, 1);
             assert(violations[0].reason.indexOf("padded") === -1);
             done();
         });
@@ -153,7 +153,7 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 0);
+            assert.equal(violations.length, 0);
             done();
         });
     });
@@ -180,7 +180,22 @@ describe("Overqualified linter", function() {
         `.trim();
 
         lintCode(lessCode, function(violations) {
-            assert(violations.length === 0);
+            assert.equal(violations.length, 0);
+            done();
+        });
+    });
+
+    it("should not report overqualified selectors in imported files", function(done) {
+        var lessCode = `
+            @import "test/overqualified.less";
+
+            #main {
+                padding: 60px;
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert.equal(violations.length, 0);
             done();
         });
     });

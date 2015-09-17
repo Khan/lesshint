@@ -32,8 +32,7 @@ function lintLessCode(linter) {
             // Throwing errors does not have the desired effect in mocha
             // land, so we'll print the error and exit with a
             if (err) {
-                console.log(err);
-                process.exit(1);
+                throw err;
             }
 
             // Invoke the callback with just the violations
