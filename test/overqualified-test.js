@@ -157,4 +157,31 @@ describe("Overqualified linter", function() {
             done();
         });
     });
+
+    it("should not detect percentages as selectors", function(done) {
+        var lessCode = `
+            @grayLighter: #ccc;
+
+            div {
+                width: 85.5%;
+            }
+
+            @keyframes block6 {
+                0% { background: @grayLighter; }
+                12.5% { background: @grayLighter; }
+                25% { background: @grayLighter; }
+                37.5% { background: @grayLighter; }
+                50% { background: @grayLighter; }
+                62.5% { background: @grayLighter; }
+                75% { background: @grayLighter; }
+                87.5% { background: @grayLighter; }
+                100% { background: @grayLighter; }
+            }
+        `.trim();
+
+        lintCode(lessCode, function(violations) {
+            assert(violations.length === 0);
+            done();
+        });
+    });
 });
