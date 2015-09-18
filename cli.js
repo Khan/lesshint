@@ -1,21 +1,27 @@
 #!/usr/bin/env node
 var fs = require("fs");
 var path = require("path");
+var argv = require("minimist")(process.argv.slice(2));
 
 var lesshint = require("./");
+var file = argv._[0];
 
-if (process.argv.length < 3) {
-    console.log("USAGE: lesshint [file]");
+if (!file) {
+    console.log("USAGE: lesshint [file] [--reporter module]");
     process.exit(1);
 }
 
-var filename = process.argv[2];
-var code = fs.readFileSync(filename, "utf-8");
+var code = fs.readFileSync(file, "utf-8");
+var reporter;
+if (argv.reporter) {
+    reporter = require(argv.reporter) && require(argv.reporter).reporter;
+}
 
 var options = {
     ignore: ["third_party"],
+    reporter: reporter,
 };
 
 // chdir() into the file's directory to make relative @import statements work
-process.chdir(path.dirname(filename));
-lesshint(filename, code, options);
+process.chdir(path.dirname(file));
+lesshint(file, code, options);

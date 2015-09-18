@@ -78,14 +78,31 @@ module.exports = function(filename, code, options) {
         });
     }
 
+    function defaultReporter(entries) {
+        entries.forEach(function(entry) {
+            var error = entry.error;
+            console.log(
+                "(" + error.line + ":" + error.character + ") " +
+                error.reason);
+        });
+    }
+
+    var reporter = options.reporter || defaultReporter;
+
     // Run the linter groups in parallel
     async.parallel([runLessLinters, runCSSLinters], function(err, results) {
         if (err) {
-            // Parsing error - add one to the column for consistency with
-            // violation columns, which are 1-indexed
-            var location = "(" + err.line + ":" + (err.column + 1) + ")";
-            console.log(location +
-                " Error parsing: unrecognized input - " + err.message);
+            // Parsing error, report a single error with code "E0"
+            reporter([{
+                file: filename,
+                error: {
+                    line: err.line,
+                    character: err.column + 1,  // 1-index
+                    code: "E0",
+                    reason: err.message,
+                },
+            }]);
+
             process.exit(1);
         }
 
@@ -96,10 +113,12 @@ module.exports = function(filename, code, options) {
 
         // Report any errors
         if (flatResults.length) {
-            flatResults.forEach(function(error) {
-                var location = "(" + error.line + ":" + error.character + ")";
-                console.log(location + " " + error.reason);
-            });
+            reporter(flatResults.map(function(error) {
+                return {
+                    file: filename,
+                    error: error,
+                };
+            }));
 
             process.exit(1);
         }
