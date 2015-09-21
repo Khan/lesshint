@@ -136,7 +136,7 @@ describe("Overqualified linter", function() {
 
         lintCode(lessCode, function(violations) {
             assert.equal(violations.length, 1);
-            assert(violations[0].reason.indexOf("padded") === -1);
+            assert.equal(violations[0].reason.indexOf("padded"), -1);
             done();
         });
     });
