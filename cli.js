@@ -14,7 +14,8 @@ if (!file) {
 var code = fs.readFileSync(file, "utf-8");
 var reporter;
 if (argv.reporter) {
-    reporter = require(argv.reporter) && require(argv.reporter).reporter;
+    // Attempt to require the reporter as specified from the command line
+    reporter = require(argv.reporter).reporter;
 }
 
 var options = {
