@@ -15,7 +15,7 @@ var nestingLint = require("./lib/nesting-lint");
 const CSS_LINTERS = [overqualifiedLint];
 const LESS_LINTERS = [abcLint, colorVariableLint, nestingLint];
 
-module.exports = function(filename, code, options) {
+module.exports = function(filename, code, options, next) {
     options = options || {};
 
     function runLessLinters(done) {
@@ -103,7 +103,8 @@ module.exports = function(filename, code, options) {
                 },
             }]);
 
-            process.exit(1);
+            // Report 1 error
+            return next(1);
         }
 
         // `results` is a deeply-nested structure due to multiple
@@ -120,7 +121,11 @@ module.exports = function(filename, code, options) {
                 };
             }));
 
-            process.exit(1);
+            // Report `flatResults.length` errors
+            next(flatResults.length);
+        } else {
+            // Report zero errors
+            next(0);
         }
     });
 };
