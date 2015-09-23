@@ -30,11 +30,14 @@ files.forEach(function(file) {
     callbackSeries.push(function(next) {
         // chdir() into the file's directory to make relative @import
         // statements work
+        var cwd = process.cwd();
         process.chdir(path.dirname(file));
 
         // Lint the file, sending a callback that will report the number of
         // errors to `async.series`
         lesshint(file, code, options, function(count) {
+            // chdir back to the previous cwd
+            process.chdir(cwd);
             next(null, count);
         });
     });
