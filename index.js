@@ -94,7 +94,7 @@ module.exports = function(filename, code, options) {
         if (err) {
             // Parsing error, report a single error with code "E0"
             reporter([{
-                file: filename,
+                file: err.filename,
                 error: {
                     line: err.line,
                     character: err.column + 1,  // 1-index
