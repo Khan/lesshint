@@ -18,6 +18,11 @@ const LESS_LINTERS = [abcLint, colorVariableLint, nestingLint];
 module.exports = function(filename, code, options, next) {
     options = options || {};
 
+    // If there's no code to lint, return 0 errors.
+    if (!code.trim()) {
+        return next(0);
+    }
+
     function runLessLinters(done) {
         less.parse(code, function(err, ast) {
             if (err) {
@@ -53,6 +58,12 @@ module.exports = function(filename, code, options, next) {
         less.render(code, options, function(err, result) {
             if (err) {
                 return done(err);
+            }
+
+            // If no map exists, this function has compiled into empty CSS,
+            // so we can safely do nothing.
+            if (!result.map) {
+                return done(null, []);
             }
 
             var callbacks = [];
