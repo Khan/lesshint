@@ -70,4 +70,29 @@ describe("Lesshint", function() {
             done();
         });
     });
+
+    it("should call out @imported files that cannot be parsed", function(done) {
+        var lessCode = `
+            @import "test/cannot-parse.less";
+        `;
+
+        var errors = [];
+        var reporter = function(reportedErrors) {
+            errors = errors.concat(reportedErrors);
+        };
+
+        lesshint("test.less", lessCode, { reporter: reporter }, function() {
+            assert.equal(errors.length, 1);
+
+            assert.equal(errors[0].file, "test.less");
+            assert.equal(errors[0].error.line, 1);
+            assert.equal(errors[0].error.character, 1);
+
+            // Test the error message
+            assert(errors[0].error.reason.indexOf("cannot-parse.less") > -1);
+            assert(errors[0].error.reason.indexOf(".bold is undefined") > -1);
+
+            done();
+        });
+    });
 });
