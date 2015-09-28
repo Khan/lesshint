@@ -103,14 +103,30 @@ module.exports = function(filename, code, options, next) {
     // Run the linter groups in parallel
     async.parallel([runLessLinters, runCSSLinters], function(err, results) {
         if (err) {
+            var reason = err.message;
+            var line = err.line;
+            var character = err.column + 1;     // 1-indexed
+
+            // If `err.filename` is something other than "input," the error
+            // is in an @imported file. Display this filename in the error
+            // message.
+            if (err.filename !== "input") {
+                reason = "Error parsing " + err.filename + ": " + reason;
+
+                // TODO: Get the line/col of `filename` that leads to this
+                // problematic import
+                line = 1;
+                character = 1;
+            }
+
             // Parsing error, report a single error with code "E0"
             reporter([{
                 file: err.filename,
                 error: {
-                    line: err.line,
-                    character: err.column + 1,  // 1-index
+                    line: line,
+                    character: character,
                     code: "E0",
-                    reason: err.message,
+                    reason: reason,
                 },
             }]);
 
